@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SmoothCurveData: {fileID: 11400000, guid: 895712169a007d841b897b917a1e7598, type: 2}
-  ClosestPointT: 0.9973304
-  ClosestPointFound: 1
+  ClosestPointT: 0.10982208
+  ClosestPointFound: 0
 --- !u!4 &747815622
 Transform:
   m_ObjectHideFlags: 0
@@ -256,7 +256,7 @@ Transform:
   m_GameObject: {fileID: 747815620}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6116, y: 0.102, z: 0}
+  m_LocalPosition: {x: 0.205, y: 0.193, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -292,7 +292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 11400000, guid: 17c40f3730324dc48b5be3db512bd23e, type: 2}
-  alwaysShowInScene: 0
+  alwaysShowInScene: 1
 --- !u!4 &967661208
 Transform:
   m_ObjectHideFlags: 0
@@ -384,8 +384,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SmoothCurveData: {fileID: 11400000, guid: 17c40f3730324dc48b5be3db512bd23e, type: 2}
-  ClosestPointT: 0.53235173
-  ClosestPointFound: 1
+  ClosestPointT: 0.96636695
+  ClosestPointFound: 0
 --- !u!4 &1171829577
 Transform:
   m_ObjectHideFlags: 0
@@ -395,7 +395,7 @@ Transform:
   m_GameObject: {fileID: 1171829575}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.616, y: 0.634, z: 0}
+  m_LocalPosition: {x: 0.582, y: 0.656, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

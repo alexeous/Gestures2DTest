@@ -18,7 +18,7 @@ public readonly struct EquationForFindingClosestPointOnCurve
         var derivative = Curve.GetDerivative(t);
         var pointToCurve = Curve.GetPosition(t) - Point;
 
-        return Vector3.Dot(derivative, pointToCurve);
+        return Vector3.Dot(derivative.normalized, pointToCurve);
     }
 
     public float FunctionDerivative(float t)
@@ -27,6 +27,11 @@ public readonly struct EquationForFindingClosestPointOnCurve
         var derivative2 = Curve.GetDerivative2(t);
         var pointToCurve = Curve.GetPosition(t) - Point;
 
-        return Vector3.Dot(derivative2, pointToCurve) + Vector2.Dot(derivative, derivative);
+        var derivativeNormalized = derivative.normalized;
+        var derivative2Normalized = derivative2.normalized;
+
+        var derivativeNormalizedDerivative = derivative2Normalized - Vector2.Dot(derivativeNormalized, derivative2Normalized) * derivativeNormalized;
+
+        return Vector2.Dot(derivativeNormalizedDerivative, pointToCurve) + Vector2.Dot(derivativeNormalized, derivative);
     }
 }

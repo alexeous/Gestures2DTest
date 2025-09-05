@@ -27,7 +27,7 @@ public class TestSlide : MonoBehaviour
         if (_curve == null)
             return;
 
-        // DrawEquation();
+        PlotEquation();
 
         if (!ClosestPointFound)
             return;
@@ -57,8 +57,8 @@ public class TestSlide : MonoBehaviour
         const float step = 0.01f;
         for (var t = step; t - step < 1f; t += step)
         {
-            var from = new Vector2(t - step, equation.Function(t - step) - 1);
-            var to = new Vector2(t, equation.Function(t) - 1);
+            var from = new Vector2(t - step, equation.FunctionDerivative(t - step) / 10 - 1);
+            var to = new Vector2(t, equation.FunctionDerivative(t) / 10 - 1);
 
             Gizmos.DrawLine(from, to);
         }
