@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Editor.Data
 {
     [CustomEditor(typeof(SmoothCurveEditingFixture))]
+    [CanEditMultipleObjects]
     public class SmoothCurveEditor : UnityEditor.Editor
     {
         private const float PositionHandleSize = 0.035f;
