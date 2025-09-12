@@ -1,4 +1,5 @@
 ﻿using Data.Curves;
+using MathUtils.Curves;
 
 namespace Components.Curves;
 
@@ -8,6 +9,8 @@ public class SmoothCurveEditingFixture : MonoBehaviour
 
 #if UNITY_EDITOR
 
+    [Obsolete("Always make uniform")]
+    public bool MakeUniform = true;
     public bool AlwaysShowInScene;
 
     private void OnDrawGizmos()
@@ -33,7 +36,7 @@ public class SmoothCurveEditingFixture : MonoBehaviour
     private void DrawCurve()
     {
         var origin = transform.position;
-        var curve = Target.ToCurve();
+        var curve = Target.ToCurve(MakeUniform);
 
         Gizmos.color = Color.yellow;
         const float step = 0.01f;
@@ -43,6 +46,23 @@ public class SmoothCurveEditingFixture : MonoBehaviour
             var currentPosition = curve.GetPosition(t);
             Gizmos.DrawLine(origin + (Vector3)prevPosition, origin + (Vector3)currentPosition);
             prevPosition = currentPosition;
+        }
+
+        DrawRunningAnts(curve);
+    }
+
+    private void DrawRunningAnts(ICurve curve)
+    {
+        const int ants = 20;
+
+        Gizmos.color = new Color(1, 1, 1, 0.5f);
+
+        for (var i = 0; i < ants; i++)
+        {
+            var t = ((float)i / ants + Time.unscaledTime * 0.1f) % 1;
+            var position = curve.GetPosition(t);
+
+            Gizmos.DrawSphere(position, 0.025f);
         }
     }
 

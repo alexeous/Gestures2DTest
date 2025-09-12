@@ -19,6 +19,7 @@ public class BezierCurve : ICurve
         return t * ((P1 - P0) * (2 - t) + t * (P2 - P1)) + P0;
     }
 
+
     public Vector2 GetDerivative(float t)
     {
         t = Mathf.Clamp01(t);

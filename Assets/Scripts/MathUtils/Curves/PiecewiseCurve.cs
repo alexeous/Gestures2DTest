@@ -59,16 +59,16 @@ public class PiecewiseCurve : ICurve
         Assert(pieces != null, "Pieces array must not be null");
         Assert(pieces.Length >= 1, "Pieces array must have at least one element");
 
-        Assert(Mathf.Approximately(pieces[0].Range.From, 0), "Range of first piece must start with 0");
-        Assert(Mathf.Approximately(pieces[^1].Range.To, 1), "Range of last piece must end with 1");
+        Assert(pieces[0].Range.From.IsApproximately(0), "Range of first piece must start with 0");
+        Assert(pieces[^1].Range.To.IsApproximately(1), "Range of last piece must end with 1");
 
         for (var i = 0; i < pieces.Length - 1; i++)
         {
             var prev = pieces[i];
             var next = pieces[i + 1];
 
-            Assert(Mathf.Approximately(prev.Range.To, next.Range.From), $"Ranges of adjacent pieces must be connected but are {prev.Range.To}, {next.Range.From}");
-            Assert(MathfExtensions.Approximately(prev.Curve.GetPosition(1), next.Curve.GetPosition(0)), "Adjacent pieces must be connected");
+            Assert(prev.Range.To.IsApproximately(next.Range.From), $"Ranges of adjacent pieces must be connected but are {prev.Range.To}, {next.Range.From}");
+            Assert(prev.Curve.GetPosition(1).IsApproximately(next.Curve.GetPosition(0)), "Adjacent pieces must be connected");
         }
     }
 
@@ -93,8 +93,8 @@ public class PiecewiseCurvePiece
 
     public PiecewiseCurvePiece(ICurve curve, FloatRange range)
     {
-        Assert(range.From > 0 || Mathf.Approximately(range.From, 0));
-        Assert(range.To < 1 || Mathf.Approximately(range.To, 1));
+        Assert(range.From.IsGreaterThanOrApproximately(0));
+        Assert(range.To.IsLessThanOrApproximately(1));
 
         Curve = curve;
         Range = range;

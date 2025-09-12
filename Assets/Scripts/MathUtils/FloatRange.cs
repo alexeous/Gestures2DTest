@@ -20,8 +20,18 @@ public readonly struct FloatRange
         return From <= value && value <= To;
     }
 
+    public float Lerp(float t)
+    {
+        return Mathf.Lerp(From, To, t);
+    }
+
+    public float InverseLerp(float t)
+    {
+        return Mathf.InverseLerp(From, To, t);
+    }
+
     public override string ToString()
     {
-        return $"[{From}, {To}]";
+        return $"|{From}, {To}|";
     }
 }

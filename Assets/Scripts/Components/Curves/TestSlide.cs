@@ -3,17 +3,24 @@ using Data.Curves;
 using Extensions;
 using MathUtils;
 using MathUtils.Curves;
+using MathUtils.Curves.Analysis;
 using MathUtils.Equations.Solving;
+
+namespace Components.Curves;
 
 [ExecuteInEditMode]
 public class TestSlide : MonoBehaviour
 {
     public SmoothCurveData SmoothCurveData;
+
+    [Obsolete("Always make uniform")]
+    public bool MakeUniform = true;
     public bool DrawAdditionalGizmos = true;
     public bool AlwaysShowInScene;
 
     public float ClosestPointT;
     public float ClosestPointT2;
+    public bool ClosestPointFound;
     public List<float> Candidates = [];
 
     private ICurve _curve;
@@ -23,7 +30,7 @@ public class TestSlide : MonoBehaviour
         if (SmoothCurveData == null)
             return;
 
-        _curve = SmoothCurveData.ToCurve();
+        _curve = SmoothCurveData.ToCurve(MakeUniform);
 
         RenewCandidates();
         FindClosestPoint();
@@ -52,15 +59,18 @@ public class TestSlide : MonoBehaviour
 
         if (DrawAdditionalGizmos)
         {
-            DrawLines();
+            // DrawLines();
             PlotEquation();
         }
 
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT), 0.025f);
+        // Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT), 0.025f);
+
+        if (!ClosestPointFound)
+            return;
 
         Gizmos.color = Color.red;
-        // Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT2), 0.025f);
+        Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT2), 0.025f);
     }
 
     private void RenewCandidates()
@@ -94,7 +104,10 @@ public class TestSlide : MonoBehaviour
     private void FindClosestPoint()
     {
         ClosestPointT = TryFindClosestPointUsingNewtonMethod() ?? FindClosestPointAmongCandidates();
-        ClosestPointT2 = TryFindClosestPointUsingNewtonMethod() ?? ClosestPointT2;
+        var newton = TryFindClosestPointUsingNewtonMethod();
+
+        ClosestPointT2 = newton ?? ClosestPointT2;
+        ClosestPointFound = newton.HasValue;
     }
 
     private float FindClosestPointAmongCandidates()
@@ -151,8 +164,8 @@ public class TestSlide : MonoBehaviour
         const float step = 0.01f;
         for (var t = step; t - step < 1f; t += step)
         {
-            var from = new Vector2(t - step, equation.Function(t - step) / 10 - 1);
-            var to = new Vector2(t, equation.Function(t) / 10 - 1);
+            var from = new Vector2(t - step, equation.FunctionDerivative(t - step) / 10 - 1);
+            var to = new Vector2(t, equation.FunctionDerivative(t) / 10 - 1);
 
             Gizmos.DrawLine(from, to);
         }

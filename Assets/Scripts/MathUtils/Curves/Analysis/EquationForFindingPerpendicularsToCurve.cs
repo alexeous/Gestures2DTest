@@ -1,6 +1,6 @@
 ﻿using MathUtils.Equations;
 
-namespace MathUtils.Curves;
+namespace MathUtils.Curves.Analysis;
 
 public readonly struct EquationForFindingPerpendicularsToCurve : IDifferentiableEquation
 {
@@ -29,8 +29,9 @@ public readonly struct EquationForFindingPerpendicularsToCurve : IDifferentiable
         var derivative2 = Curve.GetDerivative2(t);
         var pointToCurve = Curve.GetPosition(t) - Point;
 
-        var derivativeNormalized = derivative.normalized;
-        var derivative2Normalized = derivative2.normalized;
+        var derivativeMagnitude = derivative.magnitude;
+        var derivativeNormalized = derivative / derivativeMagnitude;
+        var derivative2Normalized = derivative2 / derivativeMagnitude;
 
         var derivativeNormalizedDerivative = derivative2Normalized - Vector2.Dot(derivativeNormalized, derivative2Normalized) * derivativeNormalized;
 

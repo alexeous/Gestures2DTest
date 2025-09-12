@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Extensions;
 using MathUtils;
 using MathUtils.Curves;
 
@@ -27,7 +28,7 @@ public class SmoothCurveData : ScriptableObject
         return ref Corners[index - 1].Position;
     }
 
-    public ICurve ToCurve()
+    public ICurve ToCurve(bool makeUniform)
     {
         if (Corners.Length == 0)
             return new LineSegment(Start, End);
@@ -48,14 +49,19 @@ public class SmoothCurveData : ScriptableObject
 
         TryAddTrailingLineSegment(curveBuilder, guideSegmentLengthT);
 
-        return curveBuilder.Build();
+        var piecewiseCurve = curveBuilder.Build();
+
+        if (makeUniform)
+            return UniformedCurve.CreateFrom(piecewiseCurve);
+
+        return piecewiseCurve;
     }
 
     private void TryAddLeadingLineSegment(PiecewiseCurve.Builder curveBuilder, float guideSegmentLengthT)
     {
         var firstCorner = Corners[0];
 
-        if (Mathf.Approximately(firstCorner.InBendingPointT, 0))
+        if (firstCorner.InBendingPointT.IsApproximately(0))
             return;
 
         curveBuilder.AddPiece(
@@ -67,7 +73,7 @@ public class SmoothCurveData : ScriptableObject
     {
         var lastCorner = Corners.Last();
 
-        if (Mathf.Approximately(lastCorner.OutBendingPointT, 1))
+        if (lastCorner.OutBendingPointT.IsApproximately(1))
             return;
 
         curveBuilder.AddPiece(
@@ -80,7 +86,7 @@ public class SmoothCurveData : ScriptableObject
         var prevCorner = Corners[cornerIndex - 1];
         var currentCorner = Corners[cornerIndex];
 
-        if (Mathf.Approximately(currentCorner.InBendingPointT, prevCorner.OutBendingPointT))
+        if (currentCorner.InBendingPointT.IsApproximately(prevCorner.OutBendingPointT))
             return;
 
         var prevOutBendingPosition = prevCorner.GetOutBendingPosition(currentCorner.Position);
