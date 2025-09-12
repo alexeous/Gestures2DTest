@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12edbd746b504c719e7c56fa8c4d5375, type: 3}
   m_Name: LineCurve
   m_EditorClassIdentifier: 
-  Start: {x: 0.5450253, y: 0.099885136}
-  End: {x: 0.5266313, y: 0.9544003}
+  Start: {x: 0.26584888, y: 0.1366848}
+  End: {x: 0.68213356, y: 0.6582992}
   Corners: []

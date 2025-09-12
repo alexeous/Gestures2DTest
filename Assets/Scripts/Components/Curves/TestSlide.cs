@@ -1,14 +1,20 @@
+using System.Collections.Generic;
 using Data.Curves;
+using Extensions;
+using MathUtils;
 using MathUtils.Curves;
-using MathUtils.RootFinding;
+using MathUtils.Equations.Solving;
 
 [ExecuteInEditMode]
 public class TestSlide : MonoBehaviour
 {
     public SmoothCurveData SmoothCurveData;
+    public bool DrawAdditionalGizmos = true;
+    public bool AlwaysShowInScene;
 
     public float ClosestPointT;
-    public bool ClosestPointFound;
+    public float ClosestPointT2;
+    public List<float> Candidates = [];
 
     private ICurve _curve;
 
@@ -19,30 +25,118 @@ public class TestSlide : MonoBehaviour
 
         _curve = SmoothCurveData.ToCurve();
 
+        RenewCandidates();
         FindClosestPoint();
     }
 
     private void OnDrawGizmosSelected()
     {
+        if (AlwaysShowInScene)
+            return;
+
+        DrawGizmos();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!AlwaysShowInScene)
+            return;
+
+        DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
         if (_curve == null)
             return;
 
-        PlotEquation();
-
-        if (!ClosestPointFound)
-            return;
+        if (DrawAdditionalGizmos)
+        {
+            DrawLines();
+            PlotEquation();
+        }
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT), 0.025f);
+
+        Gizmos.color = Color.red;
+        // Gizmos.DrawSphere(_curve.GetPosition(ClosestPointT2), 0.025f);
+    }
+
+    private void RenewCandidates()
+    {
+        var equation = new EquationForFindingPerpendicularsToCurve(_curve, transform.position);
+
+        const int steps = 100;
+        const float stepSize = 1f / steps;
+
+        Candidates.Clear();
+        Candidates.Add(0);
+        Candidates.Add(1);
+
+        for (var i = 0; i < steps; i++)
+        {
+            var left = i * stepSize;
+            var right = (i + 1) * stepSize;
+
+            var funcAtLeft = equation.Function(left);
+            var funcAtRight = equation.Function(right);
+
+            if (funcAtLeft.SignInt() != funcAtRight.SignInt())
+            {
+                var perpendicularPointT = BisectionSolver.TrySolve(equation, new FloatRange(left, right));
+                if (perpendicularPointT.HasValue)
+                    Candidates.Add(perpendicularPointT.Value);
+            }
+        }
     }
 
     private void FindClosestPoint()
     {
-        var equation = new EquationForFindingClosestPointOnCurve(_curve, transform.position);
+        ClosestPointT = TryFindClosestPointUsingNewtonMethod() ?? FindClosestPointAmongCandidates();
+        ClosestPointT2 = TryFindClosestPointUsingNewtonMethod() ?? ClosestPointT2;
+    }
 
-        var newClosestPointT = NewtonRootFinder.TryFind(ClosestPointT, equation.Function, equation.FunctionDerivative, minArg: 0, maxArg: 1);
-        ClosestPointT = newClosestPointT ?? ClosestPointT;
-        ClosestPointFound = newClosestPointT.HasValue;
+    private float FindClosestPointAmongCandidates()
+    {
+        var newClosestPointT = ClosestPointT;
+        var minDistance = float.PositiveInfinity;
+        foreach (var candidate in Candidates)
+        {
+            var distance = Mathf.Abs(candidate - ClosestPointT);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                newClosestPointT = candidate;
+            }
+        }
+
+        return newClosestPointT;
+
+        // var currentPosition = (Vector2)transform.position;
+        //
+        // var newClosestPointT = (float?)null;
+        // var minSqrDistance = float.MaxValue;
+        //
+        // foreach (var basePointT in Candidates)
+        // {
+        //     var sqrDistance = (_curve.GetPosition(basePointT) - currentPosition).SqrMagnitude();
+        //     if (sqrDistance < minSqrDistance)
+        //     {
+        //         minSqrDistance = sqrDistance;
+        //         newClosestPointT = basePointT;
+        //     }
+        // }
+        //
+        // return newClosestPointT!.Value;
+    }
+
+    private float? TryFindClosestPointUsingNewtonMethod()
+    {
+        var currentPosition = (Vector2)transform.position;
+        var equation = new EquationForFindingPerpendicularsToCurve(_curve, currentPosition);
+
+        return NewtonSolver.TrySolve(equation, ClosestPointT, minArg: 0, maxArg: 1);
     }
 
     private void PlotEquation()
@@ -53,7 +147,7 @@ public class TestSlide : MonoBehaviour
 
         Gizmos.color = Color.red;
 
-        var equation = new EquationForFindingClosestPointOnCurve(_curve, transform.position);
+        var equation = new EquationForFindingPerpendicularsToCurve(_curve, transform.position);
         const float step = 0.01f;
         for (var t = step; t - step < 1f; t += step)
         {
@@ -61,6 +155,20 @@ public class TestSlide : MonoBehaviour
             var to = new Vector2(t, equation.Function(t) / 10 - 1);
 
             Gizmos.DrawLine(from, to);
+        }
+    }
+
+    private void DrawLines()
+    {
+        Gizmos.color = Color.white;
+
+        var currentPosition = (Vector2)transform.position;
+        foreach (var basePointT in Candidates)
+        {
+            var perpendicularBase = _curve.GetPosition(basePointT);
+
+            Gizmos.DrawLine(currentPosition, perpendicularBase);
+            Gizmos.DrawSphere(perpendicularBase, 0.025f);
         }
     }
 }

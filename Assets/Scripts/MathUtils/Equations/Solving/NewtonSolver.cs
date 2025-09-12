@@ -1,19 +1,20 @@
-﻿namespace MathUtils.RootFinding;
+﻿namespace MathUtils.Equations.Solving;
 
-public static class NewtonRootFinder
+public static class NewtonSolver
 {
-    public static float? TryFind(float startArg, Func<float, float> function, Func<float, float> derivative,
-        float? minArg = null,
-        float? maxArg = null,
-        float epsilon = 0.0001f,
-        int maxIterations = 100)
+    public static float? TrySolve<TEquation>(in TEquation equation, float startArg,
+        float? minArg = null, float? maxArg = null,
+        float epsilon = 0.0001f, int maxIterations = 100)
+        where TEquation : IDifferentiableEquation
     {
+        Assert(equation != null);
+
         var lastArg = startArg;
         var iterations = 0;
 
         while (iterations++ < maxIterations)
         {
-            var improvedArg = lastArg - function(lastArg) / derivative(lastArg);
+            var improvedArg = lastArg - equation.Function(lastArg) / equation.FunctionDerivative(lastArg);
 
             if (improvedArg < minArg)
                 improvedArg = minArg.Value;

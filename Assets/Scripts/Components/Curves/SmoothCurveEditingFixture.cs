@@ -8,14 +8,14 @@ public class SmoothCurveEditingFixture : MonoBehaviour
 
 #if UNITY_EDITOR
 
-    public bool alwaysShowInScene;
+    public bool AlwaysShowInScene;
 
     private void OnDrawGizmos()
     {
         if (Target == null)
             return;
 
-        if (alwaysShowInScene)
+        if (AlwaysShowInScene)
             DrawCurve();
     }
 
@@ -24,7 +24,7 @@ public class SmoothCurveEditingFixture : MonoBehaviour
         if (Target == null)
             return;
 
-        if (!alwaysShowInScene)
+        if (!AlwaysShowInScene)
             DrawCurve();
 
         DrawOriginAndAxes();

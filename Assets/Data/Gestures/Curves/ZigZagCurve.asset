@@ -15,9 +15,15 @@ MonoBehaviour:
   Start: {x: 1.0010338, y: 0.4090668}
   End: {x: 0.04835479, y: 0.5361736}
   Corners:
-  - Position: {x: 0.07276656, y: 0.06386644}
-    InBendingPointT: 0.50000066
-    OutBendingPointT: 0.31004316
-  - Position: {x: 0.8393276, y: 0.941802}
-    InBendingPointT: 0.76462847
-    OutBendingPointT: 0.5000018
+  - Position: {x: 0.09102768, y: 0.25809956}
+    InBendingPointT: 0.5000013
+    OutBendingPointT: 0.5320427
+  - Position: {x: 0.23338653, y: 0.050322235}
+    InBendingPointT: 0.5320431
+    OutBendingPointT: 0.48991805
+  - Position: {x: 0.8028048, y: 0.92852104}
+    InBendingPointT: 0.48991972
+    OutBendingPointT: 0.48990893
+  - Position: {x: 0.9721359, y: 0.7475686}
+    InBendingPointT: 0.48991385
+    OutBendingPointT: 0.1862158

@@ -1,11 +1,13 @@
-﻿namespace MathUtils.Curves;
+﻿using MathUtils.Equations;
 
-public readonly struct EquationForFindingClosestPointOnCurve
+namespace MathUtils.Curves;
+
+public readonly struct EquationForFindingPerpendicularsToCurve : IDifferentiableEquation
 {
     public readonly ICurve Curve;
     public readonly Vector2 Point;
 
-    public EquationForFindingClosestPointOnCurve(ICurve curve, Vector2 point)
+    public EquationForFindingPerpendicularsToCurve(ICurve curve, Vector2 point)
     {
         Assert(curve != null);
 

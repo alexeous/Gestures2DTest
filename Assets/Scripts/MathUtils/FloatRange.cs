@@ -19,4 +19,9 @@ public readonly struct FloatRange
     {
         return From <= value && value <= To;
     }
+
+    public override string ToString()
+    {
+        return $"[{From}, {To}]";
+    }
 }
