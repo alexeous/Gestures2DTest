@@ -13,8 +13,6 @@ public class TestSlide : MonoBehaviour
 {
     public SmoothCurveData SmoothCurveData;
 
-    [Obsolete("Always make uniform")]
-    public bool MakeUniform = true;
     public bool DrawAdditionalGizmos = true;
     public bool AlwaysShowInScene;
 
@@ -23,14 +21,14 @@ public class TestSlide : MonoBehaviour
     public bool ClosestPointFound;
     public List<float> Candidates = [];
 
-    private ICurve _curve;
+    private IUniformlyParameterizedCurve _curve;
 
     private void Update()
     {
         if (SmoothCurveData == null)
             return;
 
-        _curve = SmoothCurveData.ToCurve(MakeUniform);
+        _curve = SmoothCurveData.ToCurve();
 
         RenewCandidates();
         FindClosestPoint();
@@ -161,11 +159,20 @@ public class TestSlide : MonoBehaviour
         Gizmos.color = Color.red;
 
         var equation = new EquationForFindingPerpendicularsToCurve(_curve, transform.position);
-        const float step = 0.01f;
+        const float step = 0.002f;
         for (var t = step; t - step < 1f; t += step)
         {
-            var from = new Vector2(t - step, equation.FunctionDerivative(t - step) / 10 - 1);
-            var to = new Vector2(t, equation.FunctionDerivative(t) / 10 - 1);
+            var from = new Vector2(t - step, equation.Function(t - step) / 3 - 1);
+            var to = new Vector2(t, equation.Function(t) / 3 - 1);
+
+            Gizmos.DrawLine(from, to);
+        }
+
+        Gizmos.color = Color.yellow;
+        for (var t = step; t - step < 1f; t += step)
+        {
+            var from = new Vector2(t - step, equation.FunctionDerivative(t - step) / 2 - 1);
+            var to = new Vector2(t, equation.FunctionDerivative(t) / 2 - 1);
 
             Gizmos.DrawLine(from, to);
         }

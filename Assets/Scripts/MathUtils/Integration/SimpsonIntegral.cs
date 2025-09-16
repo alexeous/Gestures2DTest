@@ -1,5 +1,9 @@
 ﻿namespace MathUtils.Integration;
 
+/// <summary>
+/// Численное интегрирование по Симпсону.
+/// <seealso href="https://ru.wikipedia.org/wiki/%D0%A4%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B0_%D0%A1%D0%B8%D0%BC%D0%BF%D1%81%D0%BE%D0%BD%D0%B0"/>
+/// </summary>
 public static class SimpsonIntegral
 {
     public static float Calculate(Func<float, float> function, FloatRange range, int steps)

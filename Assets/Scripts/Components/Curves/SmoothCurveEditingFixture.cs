@@ -9,8 +9,6 @@ public class SmoothCurveEditingFixture : MonoBehaviour
 
 #if UNITY_EDITOR
 
-    [Obsolete("Always make uniform")]
-    public bool MakeUniform = true;
     public bool AlwaysShowInScene;
 
     private void OnDrawGizmos()
@@ -36,7 +34,7 @@ public class SmoothCurveEditingFixture : MonoBehaviour
     private void DrawCurve()
     {
         var origin = transform.position;
-        var curve = Target.ToCurve(MakeUniform);
+        var curve = Target.ToCurve();
 
         Gizmos.color = Color.yellow;
         const float step = 0.01f;

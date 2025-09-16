@@ -2,6 +2,9 @@
 
 namespace MathUtils.Curves.Analysis;
 
+/// <summary>
+/// Модель для приближённого вычисления длин частей кривой (и её общей длины в частности).
+/// </summary>
 public class CurveLengthApproximation
 {
     private readonly float[] _lengthTable;
@@ -17,7 +20,7 @@ public class CurveLengthApproximation
         TotalLength = _lengthTable[^1];
     }
 
-    public float GetLength(float t)
+    public float GetLengthFrom0To(float t)
     {
         t = Mathf.Clamp01(t);
 
@@ -33,31 +36,39 @@ public class CurveLengthApproximation
         var from = Mathf.Clamp01(range.From);
         var to = Mathf.Clamp01(range.To);
 
-        return GetLength(to) - GetLength(from);
+        return GetLengthFrom0To(to) - GetLengthFrom0To(from);
     }
 
-    public float SeekT(float length)
+    /// <summary>
+    /// Ищет параметр t, соответствующий точке на кривой, расстояние от которой до её начала равно <paramref name="lengthFrom0"/>.
+    /// </summary>
+    public float SeekT(float lengthFrom0)
     {
-        if (length <= 0)
+        if (lengthFrom0 <= 0)
             return 0;
 
-        if (length >= TotalLength)
+        if (lengthFrom0 >= TotalLength)
             return 1;
 
-        var sectionIdx = Array.BinarySearch(_lengthTable, length);
+        var sectionIdx = Array.BinarySearch(_lengthTable, lengthFrom0);
         if (sectionIdx < 0)
             sectionIdx = ~sectionIdx - 1;
 
         var lengthRange = GetLengthRange(sectionIdx);
         var sectionRange = GetSectionRange(sectionIdx, _steps);
 
-        return sectionRange.Lerp(lengthRange.InverseLerp(length));
+        return sectionRange.Lerp(lengthRange.InverseLerp(lengthFrom0));
     }
 
+    /// <summary>
+    /// Создаёт модель длин кривой.
+    /// </summary>
+    /// <param name="curve">Кривая.</param>
+    /// <param name="steps">Число разбиений кривой. Чем больше, тем точнее приближение.</param>
     public static CurveLengthApproximation Build(ICurve curve, int steps = 500)
     {
-        Assert(curve != null);
-        Assert(steps > 0);
+        Assert(curve != null, "Curve must not be null");
+        Assert(steps > 0, "There must be at least one step");
 
         var lengthTable = new float[steps + 1];
         lengthTable[0] = 0;
@@ -90,6 +101,7 @@ public class CurveLengthApproximation
             _lengthTable[sectionIdx + 1]);
     }
 
+    // https://en.wikipedia.org/wiki/Arc_length
     private static Func<float, float> GetCurveLengthCalculationIntegrand(ICurve curve)
     {
         return t => curve.GetDerivative(t).magnitude;

@@ -28,7 +28,7 @@ public class SmoothCurveData : ScriptableObject
         return ref Corners[index - 1].Position;
     }
 
-    public ICurve ToCurve(bool makeUniform)
+    public IUniformlyParameterizedCurve ToCurve()
     {
         if (Corners.Length == 0)
             return new LineSegment(Start, End);
@@ -50,11 +50,9 @@ public class SmoothCurveData : ScriptableObject
         TryAddTrailingLineSegment(curveBuilder, guideSegmentLengthT);
 
         var piecewiseCurve = curveBuilder.Build();
+        var uniformlyParameterizedCurve = UniformlyParameterizedCurveFactory.CreateFrom(piecewiseCurve);
 
-        if (makeUniform)
-            return UniformedCurve.CreateFrom(piecewiseCurve);
-
-        return piecewiseCurve;
+        return uniformlyParameterizedCurve;
     }
 
     private void TryAddLeadingLineSegment(PiecewiseCurve.Builder curveBuilder, float guideSegmentLengthT)
