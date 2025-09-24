@@ -1,4 +1,5 @@
-﻿using MathUtils.Curves;
+﻿using Domain.Manipulations;
+using MathUtils.Curves;
 
 namespace Domain.Gestures.Recognition.ErrorEvaluation;
 
@@ -11,23 +12,20 @@ public class TrapezoidalDeltaErrorEvaluator : IDeltaErrorEvaluator
         _idealDistanceZone = idealDistanceZone;
     }
 
-    public float Evaluate(Gesture gesture, ManipulationDelta manipulationDelta)
+    public float Evaluate(Gesture gesture, in ManipulationDelta manipulationDelta)
     {
-        var path = gesture.Path;
-
-        var previousT = manipulationDelta.PreviousState.TracedDistance / path.Length;
-        var previousMomentaryError = CalculateMomentaryError(path, previousT, manipulationDelta.PreviousState.Position);
-
-        var nextT = manipulationDelta.NextState.TracedDistance / path.Length;
-        var nextMomentaryError = CalculateMomentaryError(path, nextT, manipulationDelta.NextState.Position);
+        var previousMomentaryError = CalculateMomentaryError(gesture.Path, manipulationDelta.PreviousState);
+        var nextMomentaryError = CalculateMomentaryError(gesture.Path, manipulationDelta.NextState);
 
         return (previousMomentaryError + nextMomentaryError) / 2;
     }
 
-    private float CalculateMomentaryError(IUniformlyParameterizedCurve path, float t, Vector2 manipulationPosition)
+    private float CalculateMomentaryError(IUniformlyParameterizedCurve path, in ManipulationState manipulationState)
     {
-        var distanceFromInputPosToExpectedPointAtPath = Vector2.Distance(path.GetPosition(t), manipulationPosition);
-        var momentaryError = Mathf.Max(0, distanceFromInputPosToExpectedPointAtPath - _idealDistanceZone.Evaluate(t));
+        var t = manipulationState.TracedDistance / path.Length;
+        var expectedPointAtPath = path.GetPosition(t);
+        var distanceFromManipPosToExpectedPointAtPath = Vector2.Distance(expectedPointAtPath, manipulationState.Position);
+        var momentaryError = Mathf.Max(0, distanceFromManipPosToExpectedPointAtPath - _idealDistanceZone.Evaluate(t));
 
         return momentaryError;
     }

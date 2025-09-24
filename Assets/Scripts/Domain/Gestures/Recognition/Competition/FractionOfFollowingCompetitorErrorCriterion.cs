@@ -1,4 +1,6 @@
-﻿namespace Domain.Gestures.Recognition.Competition;
+﻿using Domain.Manipulations;
+
+namespace Domain.Gestures.Recognition.Competition;
 
 public class FractionOfFollowingCompetitorErrorCriterion : IEarlyWinnerCriterion
 {
@@ -14,7 +16,7 @@ public class FractionOfFollowingCompetitorErrorCriterion : IEarlyWinnerCriterion
         FractionThreshold = fractionThreshold;
     }
 
-    public bool IsLeadingCompetitorAnEarlyWinner(IReadOnlyList<GesturePerformingAssessment> sortedCompetitors, ManipulationState manipulationState)
+    public bool IsLeadingCompetitorAnEarlyWinner(IReadOnlyList<GesturePerformingAssessment> sortedCompetitors, in ManipulationState manipulationState)
     {
         Assert(sortedCompetitors.Count > 0, "There must be at least one competitor");
 

@@ -1,4 +1,4 @@
-﻿namespace Domain.Gestures.Recognition;
+﻿namespace Domain.Manipulations;
 
 public struct ManipulationDelta
 {

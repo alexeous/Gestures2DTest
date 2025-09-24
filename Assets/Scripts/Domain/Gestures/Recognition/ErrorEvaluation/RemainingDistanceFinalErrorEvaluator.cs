@@ -1,4 +1,6 @@
-﻿namespace Domain.Gestures.Recognition.ErrorEvaluation;
+﻿using Domain.Manipulations;
+
+namespace Domain.Gestures.Recognition.ErrorEvaluation;
 
 public class RemainingDistanceFinalErrorEvaluator : IFinalErrorEvaluator
 {
@@ -11,10 +13,11 @@ public class RemainingDistanceFinalErrorEvaluator : IFinalErrorEvaluator
         _idealFinishRadius = idealFinishRadius;
     }
 
-    public float Evaluate(Gesture gesture, float accumulatedDeltaError, ManipulationState finalManipulationState)
+    public float Evaluate(Gesture gesture, float accumulatedDeltaError, in ManipulationState finalManipulationState)
     {
         var tracedDistanceMismatch = Mathf.Abs(gesture.Path.Length - finalManipulationState.TracedDistance);
+        var finalError = accumulatedDeltaError + Mathf.Max(0, tracedDistanceMismatch - _idealFinishRadius);
 
-        return accumulatedDeltaError + Mathf.Max(0, tracedDistanceMismatch - _idealFinishRadius);
+        return finalError;
     }
 }

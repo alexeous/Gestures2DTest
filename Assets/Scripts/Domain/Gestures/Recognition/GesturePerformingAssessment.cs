@@ -1,4 +1,5 @@
 ﻿using Domain.Gestures.Recognition.ErrorEvaluation;
+using Domain.Manipulations;
 
 namespace Domain.Gestures.Recognition;
 
@@ -23,7 +24,7 @@ public class GesturePerformingAssessment
 		_finalErrorEvaluator = finalErrorEvaluator;
 	}
 
-	public void Advance(ManipulationDelta manipulationDelta)
+	public void Advance(in ManipulationDelta manipulationDelta)
 	{
 		Assert(_state == State.InProgress, "Can only advance an assessment that has not finished");
 
@@ -31,9 +32,9 @@ public class GesturePerformingAssessment
 		Error += deltaError;
 	}
 
-	public void Finish(ManipulationState finalManipulationState)
+	public void Finish(in ManipulationState finalManipulationState)
 	{
-		Assert(_state == State.Finished, "Cannot finish an assessment that has never begun");
+		Assert(_state == State.InProgress, "Cannot finish an already finished assessment");
 
 		var finalError = _finalErrorEvaluator.Evaluate(Gesture, Error, finalManipulationState);
 		Error = finalError;

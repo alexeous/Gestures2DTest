@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Domain.Manipulations;
 using JetBrains.Annotations;
 
 namespace Domain.Gestures.Recognition.Competition;
@@ -23,7 +24,7 @@ public class GesturePerformingCompetition
         _earlyWinnerCriterion = earlyWinnerCriterion;
     }
 
-    public void Advance(ManipulationDelta manipulationDelta)
+    public void Advance(in ManipulationDelta manipulationDelta)
     {
         foreach (var competitor in _sortedCompetitors)
         {
@@ -33,7 +34,7 @@ public class GesturePerformingCompetition
         SortCompetitors();
     }
 
-    public bool HasEarlyWinner(ManipulationState manipulationState, [NotNullWhen(true)] out GesturePerformingAssessment winner)
+    public bool HasEarlyWinner(in ManipulationState manipulationState, [NotNullWhen(true)] out GesturePerformingAssessment winner)
     {
         if (_earlyWinnerCriterion == null ||
             !_earlyWinnerCriterion.IsLeadingCompetitorAnEarlyWinner(_sortedCompetitors, manipulationState))
@@ -46,7 +47,7 @@ public class GesturePerformingCompetition
         return true;
     }
 
-    public void Finish(ManipulationState finalManipulationState)
+    public void Finish(in ManipulationState finalManipulationState)
     {
         foreach (var competitor in _sortedCompetitors)
         {
