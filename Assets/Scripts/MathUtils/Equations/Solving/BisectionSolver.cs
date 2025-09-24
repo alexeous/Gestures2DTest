@@ -22,7 +22,7 @@ public static class BisectionSolver
         var iterations = 0;
         while (iterations++ < maxIterations)
         {
-            var middle = (left + right) * 0.5f;
+            var middle = (left + right) / 2;
             var middleValue = equation.Function(middle);
 
             if (Mathf.Abs(middleValue) < epsilon)

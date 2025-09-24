@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Data.Curves;
 using Extensions;
 using MathUtils;

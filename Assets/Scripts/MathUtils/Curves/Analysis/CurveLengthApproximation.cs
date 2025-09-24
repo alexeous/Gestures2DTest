@@ -33,10 +33,7 @@ public class CurveLengthApproximation
 
     public float GetLength(FloatRange range)
     {
-        var from = Mathf.Clamp01(range.From);
-        var to = Mathf.Clamp01(range.To);
-
-        return GetLengthFrom0To(to) - GetLengthFrom0To(from);
+        return GetLengthFrom0To(range.To) - GetLengthFrom0To(range.From);
     }
 
     /// <summary>

@@ -17,13 +17,13 @@ MonoBehaviour:
   Corners:
   - Position: {x: 0.09102768, y: 0.25809956}
     InBendingPointT: 0.5000013
-    OutBendingPointT: 0.5320427
+    OutBendingPointT: 0
   - Position: {x: 0.23338653, y: 0.050322235}
-    InBendingPointT: 0.5320431
-    OutBendingPointT: 0.48991805
+    InBendingPointT: 0.592
+    OutBendingPointT: 0.245
   - Position: {x: 0.8028048, y: 0.92852104}
-    InBendingPointT: 0.48991972
-    OutBendingPointT: 0.48990893
+    InBendingPointT: 0.37
+    OutBendingPointT: 0.09499995
   - Position: {x: 0.9721359, y: 0.7475686}
     InBendingPointT: 0.48991385
     OutBendingPointT: 0.1862158
